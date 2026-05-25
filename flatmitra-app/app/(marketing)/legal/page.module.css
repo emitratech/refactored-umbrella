@@ -1,0 +1,42 @@
+.main {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 5rem 1.5rem;
+  min-height: 100vh;
+}
+.label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #2a14b4;
+  display: block;
+  margin-bottom: 1rem;
+}
+.title {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  margin-bottom: 1rem;
+}
+.operatedBy {
+  color: #464554;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+.effectiveDate {
+  color: #464554;
+  margin-bottom: 3rem;
+  font-size: 0.875rem;
+}
+.legalCard {
+  transition: box-shadow 250ms ease, transform 240ms ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.legalCard:hover {
+  box-shadow: 0 15px 40px -8px rgba(0,0,0,0.10);
+  transform: translateY(-2px);
+  opacity: 1;
+}

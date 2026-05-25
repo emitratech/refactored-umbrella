@@ -1,0 +1,62 @@
+﻿# See https://help.github.com/articles/ignoring-files/
+
+# ── Dependencies ──
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# ── Build output ──
+/.next/
+/out/
+/build
+
+# ── Env / Secrets ──
+.env*
+!.env.example
+
+# ── Waitlist data (local only) ──
+data/waitlist.csv
+
+# ── Agent & AI tooling ──
+.agent/
+.agents/
+Agentguide.md
+Agentprompt.md
+
+# ── Markdown docs (internal only) ──
+*.md
+!README.md
+
+# ── Dashboard (under development) ──
+src/app/dashboard/
+src/app/(tenant)/
+src/components/dashboard/
+src/components/tenant/
+src/components/layout/
+src/components/ui/
+src/shared/
+src/lib/
+
+# ── Prisma (not used in marketing) ──
+prisma/
+prisma.config.js
+
+# ── Scratch / prototype files ──
+stitch_landing.html
+
+# ── Misc ──
+.DS_Store
+*.pem
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.vercel
+*.tsbuildinfo
+next-env.d.ts
+/coverage

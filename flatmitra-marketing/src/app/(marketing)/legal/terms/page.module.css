@@ -1,0 +1,8 @@
+.container a {
+  color: #2a14b4;
+  font-weight: 600;
+  transition: opacity 150ms ease;
+}
+.container a:hover {
+  opacity: 0.75;
+}

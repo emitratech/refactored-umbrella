@@ -1,0 +1,144 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+}
+
+model Tenant {
+  id        String     @id @default(cuid())
+  name      String
+  slug      String     @unique // e.g., 'gokuldham-mgmt'
+  plan      String     @default("free") // free | pro | enterprise
+  createdAt DateTime   @default(now())
+  users     User[]
+  buildings Building[]
+  flats     Flat[]
+  leases    Lease[]
+  bills     Bill[]
+  issues    Issue[]
+  expenses  Expense[]
+}
+
+model User {
+  id             String    @id @default(cuid())
+  authId         String    @unique // Supabase auth.users UUID
+  email          String    @unique
+  name           String
+  role           String    // ADMIN | STAFF | RENTER
+  tenantId       String
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  createdAt      DateTime  @default(now())
+  leases         Lease[]
+  bills          Bill[]
+  reportedIssues Issue[]
+
+  @@index([tenantId])
+}
+
+model Building {
+  id        String    @id @default(cuid())
+  tenantId  String
+  tenant    Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  name      String
+  location  String
+  flats     Flat[]
+  expenses  Expense[]
+  issues    Issue[]
+
+  @@index([tenantId])
+}
+
+model Flat {
+  id         String   @id @default(cuid())
+  tenantId   String
+  tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  buildingId String
+  building   Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  unitNumber String
+  rentAmount String   // String to match the mock rent format (e.g. "₹18,500" or raw values)
+  status     String   // vacant | occupied | overdue
+  leases     Lease[]
+  issues     Issue[]
+
+  @@index([tenantId])
+  @@index([buildingId])
+}
+
+model Lease {
+  id         String   @id @default(cuid())
+  tenantId   String
+  tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  flatId     String
+  flat       Flat     @relation(fields: [flatId], references: [id], onDelete: Cascade)
+  renterId   String
+  renter     User     @relation(fields: [renterId], references: [id], onDelete: Cascade)
+  startDate  DateTime
+  endDate    DateTime
+  rentAmount Float
+  status     String   // active | expired | terminated
+  bills      Bill[]
+
+  @@index([tenantId])
+  @@index([flatId])
+  @@index([renterId])
+}
+
+model Bill {
+  id            String    @id @default(cuid())
+  tenantId      String
+  tenant        Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  leaseId       String
+  lease         Lease     @relation(fields: [leaseId], references: [id], onDelete: Cascade)
+  renterId      String
+  renter        User      @relation(fields: [renterId], references: [id], onDelete: Cascade)
+  amount        Float
+  dueDate       DateTime
+  status        String    // pending | paid | overdue
+  transactionId String?
+  paidAt        DateTime?
+
+  @@index([tenantId])
+  @@index([leaseId])
+  @@index([renterId])
+}
+
+model Issue {
+  id           String    @id @default(cuid())
+  tenantId     String
+  tenant       Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  buildingId   String
+  building     Building  @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  flatId       String
+  flat         Flat      @relation(fields: [flatId], references: [id], onDelete: Cascade)
+  reporterId   String
+  reporter     User      @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+  title        String
+  description  String
+  priority     String    // low | medium | high
+  status       String    // open | in_progress | resolved
+  assigneeName String?
+  createdAt    DateTime  @default(now())
+
+  @@index([tenantId])
+  @@index([buildingId])
+  @@index([flatId])
+  @@index([reporterId])
+}
+
+model Expense {
+  id          String   @id @default(cuid())
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  buildingId  String
+  building    Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  category    String   // maintenance | salary | utilities
+  amount      Float
+  date        DateTime
+  description String
+  receiptUrl  String?
+
+  @@index([tenantId])
+  @@index([buildingId])
+}
